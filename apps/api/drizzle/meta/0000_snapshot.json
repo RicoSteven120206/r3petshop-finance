@@ -1,0 +1,923 @@
+{
+  "id": "b162e4de-55ff-4335-8676-1ac897052563",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.belanja": {
+      "name": "belanja",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "tanggal": {
+          "name": "tanggal",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "supplier_id": {
+          "name": "supplier_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "keterangan": {
+          "name": "keterangan",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "total": {
+          "name": "total",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'lunas'"
+        },
+        "dompet_id": {
+          "name": "dompet_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "dibayar_awal": {
+          "name": "dibayar_awal",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "jatuh_tempo": {
+          "name": "jatuh_tempo",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "catatan": {
+          "name": "catatan",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "belanja_supplier_id_supplier_id_fk": {
+          "name": "belanja_supplier_id_supplier_id_fk",
+          "tableFrom": "belanja",
+          "tableTo": "supplier",
+          "columnsFrom": [
+            "supplier_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "belanja_dompet_id_dompet_id_fk": {
+          "name": "belanja_dompet_id_dompet_id_fk",
+          "tableFrom": "belanja",
+          "tableTo": "dompet",
+          "columnsFrom": [
+            "dompet_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "belanja_total_positif": {
+          "name": "belanja_total_positif",
+          "value": "\"belanja\".\"total\" > 0"
+        },
+        "belanja_dibayar_valid": {
+          "name": "belanja_dibayar_valid",
+          "value": "\"belanja\".\"dibayar_awal\" >= 0 AND \"belanja\".\"dibayar_awal\" <= \"belanja\".\"total\""
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.biaya": {
+      "name": "biaya",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "tanggal": {
+          "name": "tanggal",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "kategori_id": {
+          "name": "kategori_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "jumlah": {
+          "name": "jumlah",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dompet_id": {
+          "name": "dompet_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "keterangan": {
+          "name": "keterangan",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "biaya_kategori_id_kategori_biaya_id_fk": {
+          "name": "biaya_kategori_id_kategori_biaya_id_fk",
+          "tableFrom": "biaya",
+          "tableTo": "kategori_biaya",
+          "columnsFrom": [
+            "kategori_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "biaya_dompet_id_dompet_id_fk": {
+          "name": "biaya_dompet_id_dompet_id_fk",
+          "tableFrom": "biaya",
+          "tableTo": "dompet",
+          "columnsFrom": [
+            "dompet_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "biaya_jumlah_positif": {
+          "name": "biaya_jumlah_positif",
+          "value": "\"biaya\".\"jumlah\" > 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.dana_masuk": {
+      "name": "dana_masuk",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "tanggal": {
+          "name": "tanggal",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dompet_id": {
+          "name": "dompet_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "jumlah": {
+          "name": "jumlah",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "keterangan": {
+          "name": "keterangan",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "dana_masuk_dompet_id_dompet_id_fk": {
+          "name": "dana_masuk_dompet_id_dompet_id_fk",
+          "tableFrom": "dana_masuk",
+          "tableTo": "dompet",
+          "columnsFrom": [
+            "dompet_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "dana_masuk_jumlah_positif": {
+          "name": "dana_masuk_jumlah_positif",
+          "value": "\"dana_masuk\".\"jumlah\" > 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.dompet": {
+      "name": "dompet",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "nama": {
+          "name": "nama",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "jenis": {
+          "name": "jenis",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "no_rekening": {
+          "name": "no_rekening",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "saldo_awal": {
+          "name": "saldo_awal",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "aktif": {
+          "name": "aktif",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "dompet_nama_unique": {
+          "name": "dompet_nama_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "nama"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.kategori_biaya": {
+      "name": "kategori_biaya",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "nama": {
+          "name": "nama",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "jenis": {
+          "name": "jenis",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'bulanan'"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "kategori_biaya_nama_unique": {
+          "name": "kategori_biaya_nama_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "nama"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.omzet": {
+      "name": "omzet",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "toko_id": {
+          "name": "toko_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "bulan": {
+          "name": "bulan",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "omzet_kotor": {
+          "name": "omzet_kotor",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pph": {
+          "name": "pph",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "potongan_lain": {
+          "name": "potongan_lain",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "dompet_id": {
+          "name": "dompet_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "catatan": {
+          "name": "catatan",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "omzet_toko_id_toko_id_fk": {
+          "name": "omzet_toko_id_toko_id_fk",
+          "tableFrom": "omzet",
+          "tableTo": "toko",
+          "columnsFrom": [
+            "toko_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "omzet_dompet_id_dompet_id_fk": {
+          "name": "omzet_dompet_id_dompet_id_fk",
+          "tableFrom": "omzet",
+          "tableTo": "dompet",
+          "columnsFrom": [
+            "dompet_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "omzet_toko_bulan": {
+          "name": "omzet_toko_bulan",
+          "nullsNotDistinct": false,
+          "columns": [
+            "toko_id",
+            "bulan"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {
+        "omzet_bulan_format": {
+          "name": "omzet_bulan_format",
+          "value": "\"omzet\".\"bulan\" ~ '^[0-9]{4}-(0[1-9]|1[0-2])$'"
+        },
+        "omzet_potongan_valid": {
+          "name": "omzet_potongan_valid",
+          "value": "\"omzet\".\"pph\" >= 0 AND \"omzet\".\"potongan_lain\" >= 0 AND \"omzet\".\"pph\" + \"omzet\".\"potongan_lain\" <= \"omzet\".\"omzet_kotor\""
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.pembayaran_utang": {
+      "name": "pembayaran_utang",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "belanja_id": {
+          "name": "belanja_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tanggal": {
+          "name": "tanggal",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "jumlah": {
+          "name": "jumlah",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dompet_id": {
+          "name": "dompet_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "keterangan": {
+          "name": "keterangan",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "pembayaran_utang_belanja_id_belanja_id_fk": {
+          "name": "pembayaran_utang_belanja_id_belanja_id_fk",
+          "tableFrom": "pembayaran_utang",
+          "tableTo": "belanja",
+          "columnsFrom": [
+            "belanja_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "pembayaran_utang_dompet_id_dompet_id_fk": {
+          "name": "pembayaran_utang_dompet_id_dompet_id_fk",
+          "tableFrom": "pembayaran_utang",
+          "tableTo": "dompet",
+          "columnsFrom": [
+            "dompet_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "pembayaran_jumlah_positif": {
+          "name": "pembayaran_jumlah_positif",
+          "value": "\"pembayaran_utang\".\"jumlah\" > 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.pindah_dana": {
+      "name": "pindah_dana",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "tanggal": {
+          "name": "tanggal",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "dari_dompet_id": {
+          "name": "dari_dompet_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ke_dompet_id": {
+          "name": "ke_dompet_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "jumlah": {
+          "name": "jumlah",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "keterangan": {
+          "name": "keterangan",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "pindah_dana_dari_dompet_id_dompet_id_fk": {
+          "name": "pindah_dana_dari_dompet_id_dompet_id_fk",
+          "tableFrom": "pindah_dana",
+          "tableTo": "dompet",
+          "columnsFrom": [
+            "dari_dompet_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "pindah_dana_ke_dompet_id_dompet_id_fk": {
+          "name": "pindah_dana_ke_dompet_id_dompet_id_fk",
+          "tableFrom": "pindah_dana",
+          "tableTo": "dompet",
+          "columnsFrom": [
+            "ke_dompet_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "pindah_dana_jumlah_positif": {
+          "name": "pindah_dana_jumlah_positif",
+          "value": "\"pindah_dana\".\"jumlah\" > 0"
+        },
+        "pindah_dana_beda_dompet": {
+          "name": "pindah_dana_beda_dompet",
+          "value": "\"pindah_dana\".\"dari_dompet_id\" <> \"pindah_dana\".\"ke_dompet_id\""
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.sessions": {
+      "name": "sessions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "remember": {
+          "name": "remember",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "user_agent": {
+          "name": "user_agent",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "sessions_user_id_users_id_fk": {
+          "name": "sessions_user_id_users_id_fk",
+          "tableFrom": "sessions",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.supplier": {
+      "name": "supplier",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "nama": {
+          "name": "nama",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "no_hp": {
+          "name": "no_hp",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "alamat": {
+          "name": "alamat",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "catatan": {
+          "name": "catatan",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "supplier_nama_unique": {
+          "name": "supplier_nama_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "nama"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.toko": {
+      "name": "toko",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "nama": {
+          "name": "nama",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "platform": {
+          "name": "platform",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "aktif": {
+          "name": "aktif",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "toko_nama_unique": {
+          "name": "toko_nama_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "nama"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.users": {
+      "name": "users",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "username": {
+          "name": "username",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nama": {
+          "name": "nama",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "password_hash": {
+          "name": "password_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "users_username_unique": {
+          "name": "users_username_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "username"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

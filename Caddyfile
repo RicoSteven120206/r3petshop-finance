@@ -1,0 +1,6 @@
+# Ganti dengan domain Anda. Caddy otomatis memasang HTTPS (Let's Encrypt).
+# Cukup satu domain: API diakses lewat /api yang diteruskan Next.js ke Fastify.
+r3petshop.com {
+    encode gzip
+    reverse_proxy web:3000
+}

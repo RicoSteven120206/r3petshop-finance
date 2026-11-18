@@ -1,0 +1,50 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: keuangan
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d keuangan"]
+      interval: 5s
+      retries: 10
+    restart: unless-stopped
+
+  api:
+    build: ./apps/api
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: psotgres://${DB_USER}:${DB_PASSWORD}@db:5432/keuangan
+      OWNER_USERNAME: ${OWNER_USERNAME}
+      OWNER_PASSWORD: ${OWNER_PASSWORD}
+      OWNER_NAMA: ${OWNER_NAMA}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless_stopped
+
+  web:
+    build:
+      context: ./apps/web
+      args:
+        API_URL: http://api:4000
+    environment:
+      API_URL: http://api:4000
+    depends_on: [api]
+    restart: unless_stopped
+
+  caddy:
+    image: caddy:2
+    ports: ["80:80", "443:443"]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+    depends_on: [web]
+    restart: unless_stopped
+
+volumes:
+  pgdata:
+  caddy_data:
